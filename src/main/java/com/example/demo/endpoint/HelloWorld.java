@@ -14,6 +14,6 @@ public class HelloWorld {
     @RequestMapping("hello")
     @GetMapping(produces = "application/json")
     ResponseEntity<String> getHello(){
-        return new ResponseEntity<>("HelloMyWorld",HttpStatus.OK);
+        return new ResponseEntity<>("HelloM3yWorld",HttpStatus.OK);
     }
 }
