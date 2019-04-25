@@ -15,7 +15,7 @@ stages{
     // Jenkins Master but this will also pull this same code to this slave
     stage('Git Checkout') {
      steps {
-      scm checkout
+       checkout
       }
     }
 
