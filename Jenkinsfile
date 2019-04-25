@@ -13,11 +13,11 @@ stages{
     // Checkout source code
     // This is required as Pipeline code is originally checkedout to
     // Jenkins Master but this will also pull this same code to this slave
-    stage('Git Checkout') {
-     steps {
-       checkout
-      }
-    }
+    //stage('Git Checkout') {
+    // steps {
+    //   checkout
+    //  }
+    //}
 
     // Run Maven build, skipping tests
     stage('Build'){
