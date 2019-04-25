@@ -32,5 +32,10 @@ stages{
         sh "mvn -B test"
         }
     }
+
+    stage('docker')
+    {
+        docker.build("my-image:${env.BUILD_ID}")
+    }
    }
 }
