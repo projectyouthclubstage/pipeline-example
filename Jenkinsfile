@@ -20,3 +20,4 @@ node{
     stage('Unit Test'){
         sh "mvn -B test"
     }
+}
