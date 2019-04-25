@@ -48,7 +48,7 @@ stages{
                label 'master'
            }
            steps{
-            script {
+            script{
               docker.build("my-image:${env.BUILD_ID}")
               }
            }
