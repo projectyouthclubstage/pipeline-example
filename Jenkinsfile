@@ -3,7 +3,6 @@ pipeline{
 agent {
     docker {
         image 'arm32v7/maven'
-        args  '-v /tmp:/tmp'
     }
 }
 
