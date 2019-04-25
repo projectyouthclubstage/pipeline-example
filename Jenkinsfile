@@ -1,10 +1,6 @@
 pipeline{
 
-agent {
-    docker {
-        image 'arm32v7/maven'
-    }
-}
+agent none
 
   // Pipeline Stages start here
   // Requeres at least one stage
@@ -21,6 +17,11 @@ stages{
 
     // Run Maven build, skipping tests
     stage('Build'){
+    agent {
+        docker {
+            image 'arm32v7/maven'
+        }
+    }
      steps {
         sh "mvn -B clean install -DskipTests=true"
         }
@@ -28,17 +29,27 @@ stages{
 
     // Run Maven unit tests
     stage('Unit Test'){
+    agent {
+       docker {
+           image 'arm32v7/maven'
+          }
+    }
      steps {
         sh "mvn -B test"
         }
     }
 
 
-   }
-   node{
+
+
        stage('docker')
        {
-           docker.build("my-image:${env.BUILD_ID}")
+          agent {
+               label 'master'
+           }
+           steps{
+              docker.build("my-image:${env.BUILD_ID}")
+           }
        }
    }
 }
