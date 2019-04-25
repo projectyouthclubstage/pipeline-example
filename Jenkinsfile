@@ -33,11 +33,12 @@ stages{
         }
     }
 
-    stage('docker')
-    {
-     steps {
-        docker.build("my-image:${env.BUILD_ID}")
-        }
-    }
+
+   }
+   node{
+       stage('docker')
+       {
+           docker.build("my-image:${env.BUILD_ID}")
+       }
    }
 }
