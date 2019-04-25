@@ -3,7 +3,6 @@ pipeline{
 agent {
     docker {
         image 'arm32v7/maven:3-alpine'
-        label 'my-defined-label'
         args  '-v /tmp:/tmp'
     }
 }
