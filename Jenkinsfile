@@ -59,5 +59,24 @@ stages{
               }
            }
        }
+
+       stage('Docker deploy'){
+                 agent {
+                      label 'master'
+                  }
+                  steps{
+                       new File( 'docker-compose.yml' ).withWriter { w ->
+                         new File( '/target/docker-compose.yml' ).eachLine { line ->
+                           w << line.replaceAll( '{version}', ":$BUILD_NUMBER" ) + System.getProperty("line.separator")
+                         }
+                       }
+
+                   //script{
+                      //sh "docker build ./ -t "+ registry + ":$BUILD_NUMBER"
+                      //dockerImage = docker.build registry + ":$BUILD_NUMBER"
+                      //dockerImage.push()
+                   //  }
+                  }
+       }
    }
 }
