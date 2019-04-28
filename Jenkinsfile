@@ -65,20 +65,15 @@ stages{
                       label 'master'
                   }
                   steps{
-                      copyCompose()
-                       }
 
-                   //script{
-                      //sh "docker build ./ -t "+ registry + ":$BUILD_NUMBER"
+
+
+                   script{
+                      sh "cat docker-compose-template.yml | sed -e 's/{version}/"+":$BUILD_NUMBER"+"/g' >> docker-compose.yml"
                       //dockerImage = docker.build registry + ":$BUILD_NUMBER"
                       //dockerImage.push()
-                   //  }
+                     }
+                   }
        }
    }
-}
-def copyCompose(){
-new File( 'docker-compose-template.yml' ).withWriter { w ->
-                                           new File( 'docker-compose.yml' ).eachLine { line ->
-                                             w << line.replaceAll( '{version}', ":$BUILD_NUMBER" ) + System.getProperty("line.separator")}}
-
 }
