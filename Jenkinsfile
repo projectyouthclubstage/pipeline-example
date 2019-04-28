@@ -69,10 +69,10 @@ stages{
 
 
                    script{
-                      sh "cat docker-compose-template.yml | sed -e 's/{version}/"+":$BUILD_NUMBER"+"/g' >> docker-compose.yml"
+                      sh "cat docker-compose-template.yml | sed -e 's/{version}/"+"$BUILD_NUMBER"+"/g' >> docker-compose.yml"
                       //dockerImage = docker.build registry + ":$BUILD_NUMBER"
                       //dockerImage.push()
-                      sh "docker stack deploy --compose-file docker-compose.yml pipeline-example-"+":$BUILD_NUMBER"
+                      sh "docker stack deploy --compose-file docker-compose.yml pipeline-example-"+"$BUILD_NUMBER"
                      }
                    }
        }
