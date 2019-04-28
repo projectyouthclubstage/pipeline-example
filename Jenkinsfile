@@ -73,7 +73,6 @@ stages{
                       //dockerImage = docker.build registry + ":$BUILD_NUMBER"
                       //dockerImage.push()
                    //  }
-                  }
        }
    }
 }
