@@ -3,6 +3,7 @@ pipeline{
 agent none
   environment {
     registry = "192.168.233.1:5000/pipeline-example"
+
   }
 
   // Pipeline Stages start here
@@ -52,7 +53,7 @@ stages{
            }
            steps{
             script{
-               docker.build registry + ":$BUILD_NUMBER"
+               dockerImage = docker.build registry + ":$BUILD_NUMBER"
                dockerImage.push()
               }
            }
