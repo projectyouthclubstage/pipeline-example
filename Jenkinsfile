@@ -77,8 +77,8 @@ stages{
    }
 }
 def copyCompose(){
-new File( 'docker-compose.yml' ).withWriter { w ->
-                                           new File( '/target/docker-compose.yml' ).eachLine { line ->
+new File( 'docker-compose-template.yml' ).withWriter { w ->
+                                           new File( 'docker-compose.yml' ).eachLine { line ->
                                              w << line.replaceAll( '{version}', ":$BUILD_NUMBER" ) + System.getProperty("line.separator")}}
 
 }
