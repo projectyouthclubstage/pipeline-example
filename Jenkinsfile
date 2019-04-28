@@ -53,7 +53,7 @@ stages{
            }
            steps{
             script{
-               sh "docker build "+ registry + ":$BUILD_NUMBER"
+               sh "docker build ./ -t "+ registry + ":$BUILD_NUMBER"
                //dockerImage = docker.build registry + ":$BUILD_NUMBER"
                //dockerImage.push()
               }
