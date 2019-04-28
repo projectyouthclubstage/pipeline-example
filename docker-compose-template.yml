@@ -11,8 +11,3 @@ services:
       context: .
       dockerfile: ../Dockerfile
     image: 192.168.233.1:5000/pipeline-example:{version}
-    networks:
-    - dockernet
-networks:
-  dockernet:
-    external: true
