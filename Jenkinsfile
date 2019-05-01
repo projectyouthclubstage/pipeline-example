@@ -76,7 +76,7 @@ stages{
                       sleep 60 // second
 
                       //Health blue
-                      sh "curl -m 10 "+dnsblue+"/actuator/health"
+                      sh "curl -m 10 $dnsblue/actuator/health"
 
                       //Green
                       sh "curl -d \'{\"source\": \""+dns+"\",\"target\": \"http://"+projektname+"-$BUILD_NUMBER"+":8080\"}\' -H \"Content-Type: application/json\" -X POST http://192.168.233.1:9099/v1/dns"
@@ -85,8 +85,8 @@ stages{
                       echo 'Waiting 1 minutes'
                       sleep 60 // second
 
-                      /Health green
-                      sh "curl -m 10 "+dns+"/actuator/health"
+                      //Health green
+                      sh "curl -m 10 $dns/actuator/health"
 
                       if(version != "")
                       {
