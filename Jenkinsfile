@@ -4,7 +4,7 @@ agent none
   environment {
     def repo = "192.168.233.1:5000"
     def projektname = "pipeline-example"
-    def registry = repo+"/"+projektname
+    def registry = "192.168.233.1:5000/pipeline-example"
 
   }
 
