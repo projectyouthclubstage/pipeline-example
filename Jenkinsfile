@@ -5,6 +5,9 @@ agent none
     def repo = "192.168.233.1:5000"
     def projektname = "pipeline-example"
     def registry = "192.168.233.1:5000/pipeline-example"
+    def dns = "pipeline-example.youthclubstage.de"
+    def dnsblue = "pipeline-example-blue.youthclubstage.de"
+    def port = "8080"
 
   }
 
@@ -64,8 +67,19 @@ stages{
                           script: 'docker stack ls |grep '+projektname+'| cut -d \" \" -f1',
                           returnStdout: true
                       ).trim()
-                      sh "docker stack rm "+version
+                      //sh "docker stack rm "+version
                       sh "docker stack deploy --compose-file target/docker-compose.yml "+projektname+"-"+"$BUILD_NUMBER"
+                      sh "curl -d '{\"source": \""+dnsblue+"\",\"target\": \"http://"+projektname+"-$BUILD_NUMBER"+":8080\"}' -H \"Content-Type: application/json\" -X POST http://192.168.233.1:9099/v1/dns"
+                      sh 'docker kill --signal=HUP "$(docker ps |grep nginx |cut -d " " -f1)"'
+
+                      //Green
+                      sh "curl -d '{\"source": \""+dns+"\",\"target\": \"http://"+projektname+"-$BUILD_NUMBER"+":8080\"}' -H \"Content-Type: application/json\" -X POST http://192.168.233.1:9099/v1/dns"
+                      sh 'docker kill --signal=HUP "$(docker ps |grep nginx |cut -d " " -f1)"'
+                      if(version != "")
+                      {
+                        sh "docker stack rm "+version
+                      }
+
                      }
                    }
        }
