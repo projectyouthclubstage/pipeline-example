@@ -72,9 +72,22 @@ stages{
                       sh "curl -d \'{\"source\": \""+dnsblue+"\",\"target\": \"http://"+projektname+"-$BUILD_NUMBER"+":8080\"}\' -H \"Content-Type: application/json\" -X POST http://192.168.233.1:9099/v1/dns"
                       sh 'docker kill --signal=HUP "$(docker ps |grep nginx |cut -d " " -f1)"'
 
+                      echo 'Waiting 1 minutes'
+                      sleep 60 // second
+
+                      //Health blue
+                      sh "curl -m 10 "+dnsblue+"/actuator/health"
+
                       //Green
                       sh "curl -d \'{\"source\": \""+dns+"\",\"target\": \"http://"+projektname+"-$BUILD_NUMBER"+":8080\"}\' -H \"Content-Type: application/json\" -X POST http://192.168.233.1:9099/v1/dns"
                       sh 'docker kill --signal=HUP "$(docker ps |grep nginx |cut -d " " -f1)"'
+
+                      echo 'Waiting 1 minutes'
+                      sleep 60 // second
+
+                      /Health green
+                      sh "curl -m 10 "+dns+"/actuator/health"
+
                       if(version != "")
                       {
                         sh "docker stack rm "+version
