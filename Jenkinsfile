@@ -1,9 +1,5 @@
 pipeline{
 
-def repo = "192.168.233.1:5000"
-def projektname = "pipeline-example"
-def registry = repo+projektname
-
 agent none
   environment {
     def repo = "192.168.233.1:5000"
