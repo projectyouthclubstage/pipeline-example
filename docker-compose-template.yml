@@ -11,7 +11,7 @@ services:
     networks:
       dev:
         aliases:
-         - pipeline-example-{version}
+        - pipeline-example-{version}
 networks:
   dev:
     external:
