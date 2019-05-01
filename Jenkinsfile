@@ -5,8 +5,8 @@ agent none
     def repo = "192.168.233.1:5000"
     def projektname = "pipeline-example"
     def registry = "192.168.233.1:5000/pipeline-example"
-    def dns = "pipeline-example.youthclubstage.de"
-    def dnsblue = "pipeline-example-blue.youthclubstage.de"
+    def dns = "pe-blue.youthclubstage.de"
+    def dnsblue = "pe-blue.youthclubstage.de"
     def port = "8080"
 
   }
