@@ -1,8 +1,14 @@
 pipeline{
 
+def repo = "192.168.233.1:5000"
+def projektname = "pipeline-example"
+def registry = repo+projektname
+
 agent none
   environment {
-    registry = "192.168.233.1:5000/pipeline-example"
+    def repo = "192.168.233.1:5000"
+    def projektname = "pipeline-example"
+    def registry = repo+"/"+projektname
 
   }
 
@@ -10,14 +16,6 @@ agent none
   // Requeres at least one stage
 
 stages{
-    // Checkout source code
-    // This is required as Pipeline code is originally checkedout to
-    // Jenkins Master but this will also pull this same code to this slave
-    //stage('Git Checkout') {
-    // steps {
-    //   checkout
-    //  }
-    //}
 
     // Run Maven build, skipping tests
     stage('Build'){
@@ -43,17 +41,13 @@ stages{
         }
     }
 
-
-
-
-       stage('docker')
+       stage('docker build')
        {
           agent {
                label 'master'
            }
            steps{
             script{
-               //sh "docker build ./ -t "+ registry + ":$BUILD_NUMBER"
                dockerImage = docker.build registry + ":$BUILD_NUMBER"
                dockerImage.push()
               }
@@ -70,10 +64,12 @@ stages{
 
                    script{
                       sh "cat docker-compose-template.yml | sed -e 's/{version}/"+"$BUILD_NUMBER"+"/g' >> target/docker-compose.yml"
-                      //dockerImage = docker.build registry + ":$BUILD_NUMBER"
-                      //dockerImage.push()
-                      sh 'docker stack rm "$(docker stack ls |grep pipeline-example| cut -d \" \" -f1)"'
-                      sh "docker stack deploy --compose-file target/docker-compose.yml pipeline-example-"+"$BUILD_NUMBER"
+                      def version = sh (
+                          script: 'docker stack ls |grep '+projektname+'| cut -d \" \" -f1',
+                          returnStdout: true
+                      ).trim()
+                      sh "docker stack rm "+version
+                      sh "docker stack deploy --compose-file target/docker-compose.yml "+projektname+"-"+"$BUILD_NUMBER"
                      }
                    }
        }
