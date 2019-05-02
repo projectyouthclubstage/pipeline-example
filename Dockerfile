@@ -1,4 +1,4 @@
-FROM armv7/armhf-java8:latest
+FROM arm32v7/openjdk:latest
 MAINTAINER Sascha Deeg <sascha.deeg@gmail.com>
 USER root
 COPY ./target/demo-*.jar /root/demo.jar
