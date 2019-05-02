@@ -70,27 +70,36 @@ stages{
                       //sh "docker stack rm "+version
                       sh "docker stack deploy --compose-file target/docker-compose.yml "+projektname+"-"+"$BUILD_NUMBER"
 
-                      echo 'Waiting 2 minutes'
-                      sleep 120 // second
+
+                      sleep 240 // second
 
                       sh "curl -d \'{\"source\": \""+dnsblue+"\",\"target\": \"http://"+projektname+"-$BUILD_NUMBER"+":8080\"}\' -H \"Content-Type: application/json\" -X POST http://192.168.233.1:9099/v1/dns"
                       sh 'docker kill --signal=HUP "$(docker ps |grep nginx |cut -d " " -f1)"'
 
-                      echo 'Waiting 1 minutes'
-                      sleep 60 // second
+
+                      sleep 10 // second
 
                       //Health blue
-                      sh "curl -m 10 https://$dnsblue/actuator/health"
+
+                      retry (3) {
+                          sleep 5
+                          httpRequest url:"https://$dnsblue/actuator/health", validResponseCodes: '200', validResponseContent: '"status":"UP"'
+                      }
+
 
                       //Green
                       sh "curl -d \'{\"source\": \""+dns+"\",\"target\": \"http://"+projektname+"-$BUILD_NUMBER"+":8080\"}\' -H \"Content-Type: application/json\" -X POST http://192.168.233.1:9099/v1/dns"
                       sh 'docker kill --signal=HUP "$(docker ps |grep nginx |cut -d " " -f1)"'
 
-                      echo 'Waiting 1 minutes'
-                      sleep 60 // second
+
+                      sleep 10 // second
 
                       //Health green2
-                      sh "curl -m 10 https://$dns/actuator/health"
+
+                      retry (3) {
+                          sleep 5
+                          httpRequest url:"https://$dns/actuator/health", validResponseCodes: '200', validResponseContent: '"status":"UP"'
+                      }
 
                       if(version != "")
                       {
