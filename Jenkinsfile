@@ -73,7 +73,7 @@ stages{
 
                       sleep 240 // second
 
-                      sh "curl -d \'{\"source\": \""+dnsblue+"\",\"target\": \"http://"+projektname+"-$BUILD_NUMBER"+":8080\"}\' -H \"Content-Type: application/json\" -X POST http://192.168.233.1:9099/v1/dns"
+                      sh "curl -d \'{\"source\": \""+dnsblue+"\",\"target\": \""+projektname+"-$BUILD_NUMBER"+":8080\"}\' -H \"Content-Type: application/json\" -X POST http://192.168.233.1:9099/v1/dns"
                       sh 'docker kill --signal=HUP "$(docker ps |grep nginx |cut -d " " -f1)"'
 
 
@@ -88,7 +88,7 @@ stages{
 
 
                       //Green
-                      sh "curl -d \'{\"source\": \""+dns+"\",\"target\": \"http://"+projektname+"-$BUILD_NUMBER"+":8080\"}\' -H \"Content-Type: application/json\" -X POST http://192.168.233.1:9099/v1/dns"
+                      sh "curl -d \'{\"source\": \""+dns+"\",\"target\": \""+projektname+"-$BUILD_NUMBER"+":8080\"}\' -H \"Content-Type: application/json\" -X POST http://192.168.233.1:9099/v1/dns"
                       sh 'docker kill --signal=HUP "$(docker ps |grep nginx |cut -d " " -f1)"'
 
 
