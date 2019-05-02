@@ -1,4 +1,4 @@
-FROM arm32v7/openjdk:latest
+FROM arm32v7/openjdk:11.0.3-slim-stretch
 MAINTAINER Sascha Deeg <sascha.deeg@gmail.com>
 USER root
 COPY ./target/demo-*.jar /root/demo.jar
