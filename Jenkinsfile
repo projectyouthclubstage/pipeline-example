@@ -85,7 +85,7 @@ stages{
                       echo 'Waiting 1 minutes'
                       sleep 60 // second
 
-                      //Health green
+                      //Health green2
                       sh "curl -m 10 https://$dns/actuator/health"
 
                       if(version != "")
