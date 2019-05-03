@@ -110,4 +110,11 @@ stages{
                    }
        }
    }
+     post {
+       failure {
+         script{
+           sh "docker stack rm $projektname-$BUILD_NUMBER"
+         }
+       }
+     }
 }
