@@ -14,8 +14,6 @@ agent none
 
   }
 
-  // Pipeline Stages start here
-  // Requeres at least one stage
 
 stages{
 
@@ -90,7 +88,7 @@ def getDate(){
     return ""+dateFormat.format(date)
 }
 
-def dockerDeploy(String mybuildverison, String projektname, String dns, String dnsblue, string port){
+def dockerDeploy(String mybuildverison, String projektname, String dns, String dnsblue, String port){
                       sh "cat docker-compose-template.yml | sed -e 's/{version}/"+"$mybuildverison"+"/g' >> target/docker-compose.yml"
                       def version = sh (
                           script: 'docker stack ls |grep '+projektname+'| cut -d \" \" -f1',
