@@ -2,6 +2,9 @@ pipeline{
 
 agent none
   environment {
+    def dateFormat = new SimpleDateFormat("yyyyMMddHHmm")
+    def date = new Date() 
+    def mybuildverison = ""+dateFormat.format(date)
     def repo = "192.168.233.1:5000"
     def projektname = "pipeline-example"
     def registry = "192.168.233.1:5000/pipeline-example"
@@ -47,7 +50,7 @@ stages{
            }
            steps{
             script{
-               dockerImage = docker.build registry + ":$BUILD_NUMBER"
+               dockerImage = docker.build registry + ":$mybuildverison"
                dockerImage.push()
               }
            }
@@ -62,18 +65,18 @@ stages{
 
 
                    script{
-                      sh "cat docker-compose-template.yml | sed -e 's/{version}/"+"$BUILD_NUMBER"+"/g' >> target/docker-compose.yml"
+                      sh "cat docker-compose-template.yml | sed -e 's/{version}/"+"$mybuildverison"+"/g' >> target/docker-compose.yml"
                       def version = sh (
                           script: 'docker stack ls |grep '+projektname+'| cut -d \" \" -f1',
                           returnStdout: true
                       ).trim()
                       //sh "docker stack rm "+version
-                      sh "docker stack deploy --compose-file target/docker-compose.yml "+projektname+"-"+"$BUILD_NUMBER"
+                      sh "docker stack deploy --compose-file target/docker-compose.yml "+projektname+"-"+"$mybuildverison"
 
 
                       sleep 240 // second
 
-                      sh "curl -d \'{\"source\": \""+dnsblue+"\",\"target\": \""+projektname+"-$BUILD_NUMBER"+":8080\"}\' -H \"Content-Type: application/json\" -X POST http://192.168.233.1:9099/v1/dns"
+                      sh "curl -d \'{\"source\": \""+dnsblue+"\",\"target\": \""+projektname+"-$mybuildverison"+":8080\"}\' -H \"Content-Type: application/json\" -X POST http://192.168.233.1:9099/v1/dns"
                       sh 'docker kill --signal=HUP "$(docker ps |grep nginx |cut -d " " -f1)"'
 
 
@@ -88,7 +91,7 @@ stages{
 
 
                       //Green
-                      sh "curl -d \'{\"source\": \""+dns+"\",\"target\": \""+projektname+"-$BUILD_NUMBER"+":8080\"}\' -H \"Content-Type: application/json\" -X POST http://192.168.233.1:9099/v1/dns"
+                      sh "curl -d \'{\"source\": \""+dns+"\",\"target\": \""+projektname+"-$mybuildverison"+":8080\"}\' -H \"Content-Type: application/json\" -X POST http://192.168.233.1:9099/v1/dns"
                       sh 'docker kill --signal=HUP "$(docker ps |grep nginx |cut -d " " -f1)"'
 
 
@@ -113,7 +116,7 @@ stages{
      post {
        failure {
          script{
-           sh "docker stack rm $projektname-$BUILD_NUMBER"
+           sh "docker stack rm $projektname-$mybuildverison"
          }
        }
      }
