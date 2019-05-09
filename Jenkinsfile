@@ -5,7 +5,7 @@ pipeline{
 agent none
   environment {
 
-    def mybuildverison = getDate()
+    def mybuildverison = getDate(env.BUILD_NUMBER)
     def projektname = "pipeline-example"
     def registry = "192.168.233.1:5000/pipeline-example"
     def dns = "pe.youthclubstage.de"
@@ -82,10 +82,10 @@ stages{
      }
 }
 
-def getDate(){
+def getDate(String buildnr){
     def dateFormat = new SimpleDateFormat("yyyyMMddHHmm")
     def date = new Date()
-    return ""+dateFormat.format(date)
+    return dateFormat.format(date)+buildnr
 }
 
 def dockerDeploy(String mybuildverison, String projektname, String dns, String dnsblue, String port){
