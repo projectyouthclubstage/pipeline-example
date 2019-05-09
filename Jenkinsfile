@@ -4,9 +4,8 @@ pipeline{
 
 agent none
   environment {
-    def dateFormat = new SimpleDateFormat("yyyyMMddHHmm")
-    def date = new Date() 
-    def mybuildverison = ""+dateFormat.format(date)
+
+    def mybuildverison = getDate()
     def repo = "192.168.233.1:5000"
     def projektname = "pipeline-example"
     def registry = "192.168.233.1:5000/pipeline-example"
@@ -122,4 +121,10 @@ stages{
          }
        }
      }
+}
+
+def getDate(){
+    def dateFormat = new SimpleDateFormat("yyyyMMddHHmm")
+    def date = new Date()
+    return ""+dateFormat.format(date)
 }
