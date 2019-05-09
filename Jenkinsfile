@@ -6,7 +6,6 @@ agent none
   environment {
 
     def mybuildverison = getDate()
-    def repo = "192.168.233.1:5000"
     def projektname = "pipeline-example"
     def registry = "192.168.233.1:5000/pipeline-example"
     def dns = "pe.youthclubstage.de"
@@ -69,6 +68,29 @@ stages{
 
                    script{
                       if (env.BRANCH_NAME == 'master') {
+                        dockerDeploy(mybuildverison,projektname,dns,dnsblue,port)
+                      }
+
+                     }
+                   }
+       }
+   }
+     post {
+       failure {
+         script{
+           sh "docker stack rm $projektname-$mybuildverison"
+         }
+       }
+     }
+}
+
+def getDate(){
+    def dateFormat = new SimpleDateFormat("yyyyMMddHHmm")
+    def date = new Date()
+    return ""+dateFormat.format(date)
+}
+
+def dockerDeploy(String mybuildverison, String projektname, String dns, String dnsblue, string port){
                       sh "cat docker-compose-template.yml | sed -e 's/{version}/"+"$mybuildverison"+"/g' >> target/docker-compose.yml"
                       def version = sh (
                           script: 'docker stack ls |grep '+projektname+'| cut -d \" \" -f1',
@@ -112,23 +134,4 @@ stages{
                       {
                         sh "docker stack rm "+version
                       }
-                      }
-
-                     }
-                   }
-       }
-   }
-     post {
-       failure {
-         script{
-           sh "docker stack rm $projektname-$mybuildverison"
-         }
-       }
-     }
-}
-
-def getDate(){
-    def dateFormat = new SimpleDateFormat("yyyyMMddHHmm")
-    def date = new Date()
-    return ""+dateFormat.format(date)
 }
