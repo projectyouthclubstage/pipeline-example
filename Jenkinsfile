@@ -51,8 +51,10 @@ stages{
            }
            steps{
             script{
+                if (env.BRANCH_NAME == 'master') {
                dockerImage = docker.build registry + ":$mybuildverison"
                dockerImage.push()
+               }
               }
            }
        }
@@ -66,6 +68,7 @@ stages{
 
 
                    script{
+                      if (env.BRANCH_NAME == 'master') {
                       sh "cat docker-compose-template.yml | sed -e 's/{version}/"+"$mybuildverison"+"/g' >> target/docker-compose.yml"
                       def version = sh (
                           script: 'docker stack ls |grep '+projektname+'| cut -d \" \" -f1',
@@ -108,6 +111,7 @@ stages{
                       if(version != "")
                       {
                         sh "docker stack rm "+version
+                      }
                       }
 
                      }
