@@ -4,6 +4,12 @@ services:
     environment:
     - MQTT_HOST=192.168.22.26
     - MQTT_PORT=1883
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8080/actuator/health"]
+      interval: 1m30s
+      timeout: 10s
+      retries: 3
+      start_period: 40s
     build:
       context: .
       dockerfile: ../Dockerfile
