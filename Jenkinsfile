@@ -1,6 +1,6 @@
 import java.text.SimpleDateFormat
 pipeline{
-  agent 'default'
+  agent kubernetes
   environment {
     def mybuildverison = getBuildVersion(env.BUILD_NUMBER)
     def projektname = "pipeline-example"
