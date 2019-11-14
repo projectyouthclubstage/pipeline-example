@@ -20,6 +20,7 @@ stages{
        stage('docker build')
        {
            steps{
+             checkout scm
             script{
                 if (env.BRANCH_NAME == 'master') {
                dockerImage = docker.build registry + ":$mybuildverison"
