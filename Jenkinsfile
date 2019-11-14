@@ -19,9 +19,6 @@ stages{
 
        stage('docker build')
        {
-          agent {
-               label 'agent'
-           }
            steps{
             script{
                 if (env.BRANCH_NAME == 'master') {
