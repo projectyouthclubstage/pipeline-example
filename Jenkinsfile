@@ -5,7 +5,7 @@ import java.text.SimpleDateFormat
  */
 
 podTemplate(containers: [
-  containerTemplate(name: 'maven', image: 'maven:3.3.9-jdk-8-alpine', ttyEnabled: true, command: 'cat')
+  containerTemplate(name: 'maven', image: 'arm32v7/maven:3.3.9-jdk-8-alpine', ttyEnabled: true, command: 'cat')
   ]) {
 
   node(POD_LABEL) {
