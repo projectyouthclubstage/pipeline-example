@@ -1,21 +1,6 @@
 import java.text.SimpleDateFormat
 
-/**
- * This pipeline will execute a simple Maven build
- */
-
-podTemplate(containers: [
-  containerTemplate(name: 'maven', image: 'arm32v7/maven:3.3.9-jdk-8-alpine', ttyEnabled: true, command: 'cat')
-  ]) {
-
-  node(POD_LABEL) {
-    stage('Build a Maven project') {
-      container('maven') {
-          sh 'mvn -B clean package'
-      }
-    }
-  }
-
+pipeline{
 
 agent none
   environment {
