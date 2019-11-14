@@ -46,7 +46,6 @@ stages{
 
 }
 }
-}
 
 def getBuildVersion(String buildnr){
     def dateFormat = new SimpleDateFormat("yyyyMMddHHmm")
