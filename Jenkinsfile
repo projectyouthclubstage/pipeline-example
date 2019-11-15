@@ -4,7 +4,7 @@ pipeline{
   environment {
     def mybuildverison = getBuildVersion(env.BUILD_NUMBER)
     def projektname = "pipeline-example"
-    def registry = "registry.youthclubstage.de/pipeline-example"
+    def registry = "registry.youthclubstage.de:5000/pipeline-example"
     def dns = "pe.youthclubstage.de"
     def dnsblue = "peb.youthclubstage.de"
     def port = "8080"
