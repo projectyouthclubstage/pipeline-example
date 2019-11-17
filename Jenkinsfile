@@ -52,8 +52,10 @@ pipeline {
        when { changelog '.*#DeployDev.*' }
        steps {
         container('docker') {
-            dockerImage = docker.build registry + ":$mybuildversion"
-            dockerImage.push()
+            script{
+             dockerImage = docker.build registry + ":$mybuildversion"
+             dockerImage.push()
+            }
         }
        }
      }
@@ -90,6 +92,7 @@ pipeline {
        when { changelog '.*#DeployDev.*' }
        steps {
         container('kubectl') {
+          script{
             sh "cat template/service.yaml | sed -e 's/{NAME}/$projektname/g;s/{VERSION}/$mybuildversion/g;s/{PORT}/$port/g' >> target/service.yaml"
             sh "cat target/service.yaml"
             sh "kubectl -n dev apply -f target/service.yaml"
@@ -99,6 +102,7 @@ pipeline {
 
             }
             sh "kubectl -n dev label all -l run=$projektname-$mybuildversion service=$projektname"
+          }
         }
        }
      }
