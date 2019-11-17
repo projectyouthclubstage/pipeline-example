@@ -54,9 +54,7 @@ def port = "8080"
             script {
                            env.FILENAME = readFile 'template/green.yml'
             }
-           sh """
-               echo ${env.FILENAME}
-             """
+           sh "echo \"${env.FILENAME}\""
        }
      }/*
      stage('Run helm') {
