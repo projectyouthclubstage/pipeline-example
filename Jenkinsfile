@@ -53,7 +53,7 @@ def label = "worker-${UUID.randomUUID().toString()}"
      stage('Run kubectl') {
        container('kubectl') {
            sh "cat template/green.yaml | sed -e 's/{NAME}/$projektname/g;s/{VERSION}/$mybuildversion/g' >> target/green.yaml"
-           sh "cat target/green.yml"
+           sh "cat target/green.yaml"
            sh "kubectl -n test apply -f target/green.yaml"
        }
      }/*
