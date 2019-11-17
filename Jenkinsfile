@@ -52,7 +52,7 @@ def port = "8080"
      stage('Run kubectl') {
        container('kubectl') {
            sh """
-             kubectl apply \"apiVersion: v1
+             kubectl apply "apiVersion: v1
                               kind: Service
                               metadata:
                                 name: $(projektname)-srv-green
@@ -87,7 +87,7 @@ def port = "8080"
                                       image: registry.youthclubstage.de:5000/p$(projektname):$(mybuildverison)
                                       ports:
                                       - containerPort: 8080
-                              \"
+                              "
              """
        }
      }/*
