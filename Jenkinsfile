@@ -51,7 +51,7 @@ stages{
            when { changelog '.*#DeployDev.*' }
            steps{
             script{
-                sh "echo hallo"
+                sh "echo hallo2"
               }
            }
        }
