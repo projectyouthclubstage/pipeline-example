@@ -63,7 +63,7 @@ pipeline {
        when { changelog '.*#DeployDev.*' }
        steps {
         container('kubectl') {
-            sh "cat template/deployment.yaml | sed -e 's/{NAME}/$projektname/g;s/{VERSION}/$mybuildversion/g;s/{PORT}/$port/g;s/{BRANCH}/${GIT_BRANCH_LOCAL}/g' >> target/deployment.yaml"
+            sh "cat template/deployment.yaml | sed -e 's/{NAME}/$projektname/g;s/{VERSION}/$mybuildversion/g;s/{PORT}/$port/g;s/{BRANCH}/$gitBranch/g' >> target/deployment.yaml"
             sh "cat target/deployment.yaml"
             sh "kubectl -n dev apply -f target/deployment.yaml"
         }
