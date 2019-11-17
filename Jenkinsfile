@@ -107,6 +107,7 @@ pipeline {
        }
      }
      stage('Health Check'){
+       when { changelog '.*#DeployDev.*' }
        steps {
         retry (3) {
           sleep 30
