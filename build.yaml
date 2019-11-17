@@ -7,7 +7,6 @@ spec:
   containers:
     - name: jnlp
       image: 'registry.youthclubstage.de:5000/jnlp-slave:6'
-      args: ["${computer.jnlpmac}","${computer.name}"]
       volumeMounts:
         - mountPath: /var/run/docker.sock
           name: docker
