@@ -66,7 +66,7 @@ def label = "worker-${UUID.randomUUID().toString()}"
      stage('Health Check'){
        retry (3) {
          sleep 30
-         httpRequest url:"http://$projektname-green-srv$healthpath", validResponseCodes: '200'
+         httpRequest url:"http://$projektname-green-srv.dev$healthpath", validResponseCodes: '200'
        }
      }
      stage('Deploy Service to DEV') {
