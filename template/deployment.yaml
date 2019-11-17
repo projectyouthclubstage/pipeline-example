@@ -4,6 +4,7 @@ metadata:
   name: {NAME}-{VERSION}
   labels:
     run: {NAME}-{VERSION}
+    branch: {BRANCH}
 spec:
   selector:
     matchLabels:
@@ -13,6 +14,7 @@ spec:
     metadata:
       labels:
         run: {NAME}-{VERSION}
+        branch: {BRANCH}
     spec:
       containers:
         - name: {NAME}-{VERSION}

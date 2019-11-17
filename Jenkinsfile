@@ -15,11 +15,16 @@ def label = "worker-${UUID.randomUUID().toString()}"
    node(label) {
      def myRepo = checkout scm
      def mybuildversion = getBuildVersion(env.BUILD_NUMBER)
-     def projektname = env.JOB_NAME.replace("/master","").replace("projectyouthclubstage/","")
+     def projektname = env.JOB_NAME.replace("/${GIT_BRANCH_LOCAL}","").replace("projectyouthclubstage/","")
      def registry = "registry.youthclubstage.de:5000/${projektname}"
      def healthpath = "/actuator/health"
      def port = "8080"
-
+     stage('Prepare') {
+         echo "$projektname"
+         echo "$mybuildversion"
+         echo "$registry"
+         echo "${GIT_BRANCH_LOCAL}"
+     }
      stage('Build') {
        container('maven') {
          sh "mvn -B clean install -DskipTests=true"
@@ -40,19 +45,22 @@ def label = "worker-${UUID.randomUUID().toString()}"
      }
 
      stage('Create Docker images') {
+       when { changelog '.*#DeployDev.*' }
        container('docker') {
            dockerImage = docker.build registry + ":$mybuildversion"
            dockerImage.push()
        }
      }
      stage('Deploy Deployment to DEV') {
+       when { changelog '.*#DeployDev.*' }
        container('kubectl') {
-           sh "cat template/deployment.yaml | sed -e 's/{NAME}/$projektname/g;s/{VERSION}/$mybuildversion/g;s/{PORT}/$port/g' >> target/deployment.yaml"
+           sh "cat template/deployment.yaml | sed -e 's/{NAME}/$projektname/g;s/{VERSION}/$mybuildversion/g;s/{PORT}/$port/g;s/{BRANCH}/${GIT_BRANCH_LOCAL}/g' >> target/deployment.yaml"
            sh "cat target/deployment.yaml"
            sh "kubectl -n dev apply -f target/deployment.yaml"
        }
      }
      stage('Deploy Service-Green to DEV') {
+       when { changelog '.*#DeployDev.*' }
        container('kubectl') {
            sh "cat template/service-green.yaml | sed -e 's/{NAME}/$projektname/g;s/{VERSION}/$mybuildversion/g;s/{PORT}/$port/g' >> target/service-green.yaml"
            sh "cat target/service-green.yaml"
@@ -60,12 +68,14 @@ def label = "worker-${UUID.randomUUID().toString()}"
        }
      }
      stage('Health Check Green'){
+       when { changelog '.*#DeployDev.*' }
        retry (3) {
          sleep 30
          httpRequest url:"http://$projektname-green-srv.dev$healthpath", validResponseCodes: '200'
        }
      }
      stage('Deploy Service to DEV') {
+       when { changelog '.*#DeployDev.*' }
        container('kubectl') {
            sh "cat template/service.yaml | sed -e 's/{NAME}/$projektname/g;s/{VERSION}/$mybuildversion/g;s/{PORT}/$port/g' >> target/service.yaml"
            sh "cat target/service.yaml"
