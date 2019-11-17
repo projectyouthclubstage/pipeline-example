@@ -6,15 +6,18 @@ pipeline {
       yamlFile 'build.yaml'
     }
   }
+  environment {
+    def myRepo = checkout scm
+    def mybuildversion = getBuildVersion(env.BUILD_NUMBER)
+    def gitBranch = myRepo.GIT_BRANCH
+    def projektname = env.JOB_NAME.replace("/$gitBranch","").replace("projectyouthclubstage/","")
+    def registry = "registry.youthclubstage.de:5000/${projektname}"
+    def healthpath = "/actuator/health"
+    def port = "8080"
+  }
   stages {
+
      stage('Prepare') {
-       def myRepo = checkout scm
-          def mybuildversion = getBuildVersion(env.BUILD_NUMBER)
-          def gitBranch = myRepo.GIT_BRANCH
-          def projektname = env.JOB_NAME.replace("/$gitBranch","").replace("projectyouthclubstage/","")
-          def registry = "registry.youthclubstage.de:5000/${projektname}"
-          def healthpath = "/actuator/health"
-          def port = "8080"
          echo "$projektname"
          echo "$mybuildversion"
          echo "$registry"
