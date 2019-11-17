@@ -1,9 +1,9 @@
 apiVersion: v1
   kind: Service
   metadata:
-    name: $(projektname)-srv-green
+    name: $(env.PRNAME)-srv-green
     labels:
-      run: $(projektname)-$(mybuildverison)
+      run: $(env.PRNAME)-$(env.PRVERSION)
   spec:
     type: NodePort
     ports:
@@ -12,24 +12,24 @@ apiVersion: v1
         protocol: TCP
         name: http
     selector:
-      run: $(projektname)-$(mybuildverison)
+      run: $(env.PRNAME)-$(env.PRVERSION)
 ---
 apiVersion: apps/v1
   kind: Deployment
   metadata:
-    name: $(projektname)-$(mybuildverison)
+    name: $(env.PRNAME)-$(env.PRVERSION)
   spec:
     selector:
       matchLabels:
-        run: $(projektname)-$(mybuildverison)
+        run: $(env.PRNAME)-$(env.PRVERSION)
     replicas: 3
     template:
       metadata:
         labels:
-          run: $(projektname)-$(mybuildverison)
+          run: $(env.PRNAME)-$(env.PRVERSION)
       spec:
         containers:
-          - name: $(projektname)-$(mybuildverison)
-            image: registry.youthclubstage.de:5000/$(projektname):$(mybuildverison)
+          - name: $(env.PRNAME)-$(env.PRVERSION)
+            image: registry.youthclubstage.de:5000/$(env.PRNAME):$(env.PRVERSION)
             ports:
               - containerPort: 8080

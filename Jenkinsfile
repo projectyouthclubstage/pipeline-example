@@ -53,7 +53,9 @@ def label = "worker-${UUID.randomUUID().toString()}"
      stage('Run kubectl') {
        container('kubectl') {
             script {
-                           env.FILENAME = readFile 'template/green.yml'
+                env.FILENAME = readFile 'template/green.yml'
+                env.PRNAME = projektname
+                env.PRVERSION = mybuildverison
             }
            sh "echo \"${env.FILENAME}\""
        }
