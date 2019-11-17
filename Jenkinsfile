@@ -51,7 +51,7 @@ def port = "8080"
      }
      stage('Run kubectl') {
        container('kubectl') {
-         sh """
+           sh """
              kubectl apply \"apiVersion: v1
                               kind: Service
                               metadata:
@@ -88,7 +88,7 @@ def port = "8080"
                                       ports:
                                       - containerPort: 8080
                               \"
-            """
+             """
        }
      }/*
      stage('Run helm') {
