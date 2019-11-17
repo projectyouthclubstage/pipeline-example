@@ -1,19 +1,19 @@
 apiVersion: apps/v1
-  kind: Deployment
-  metadata:
-    name: {NAME}-{VERSION}
-  spec:
-    selector:
-      matchLabels:
+kind: Deployment
+metadata:
+  name: {NAME}-{VERSION}
+spec:
+  selector:
+    matchLabels:
+      run: {NAME}-{VERSION}
+  replicas: 3
+  template:
+    metadata:
+      labels:
         run: {NAME}-{VERSION}
-    replicas: 3
-    template:
-      metadata:
-        labels:
-          run: {NAME}-{VERSION}
-      spec:
-        containers:
-          - name: {NAME}-{VERSION}
-            image: registry.youthclubstage.de:5000/{NAME}:{VERSION}
-            ports:
-              - containerPort: 8080
+    spec:
+      containers:
+        - name: {NAME}-{VERSION}
+          image: registry.youthclubstage.de:5000/{NAME}:{VERSION}
+          ports:
+             - containerPort: 8080
