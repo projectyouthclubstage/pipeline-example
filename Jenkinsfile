@@ -18,7 +18,7 @@ def label = "worker-${UUID.randomUUID().toString()}"
      def gitBranch = myRepo.GIT_BRANCH
      def shortGitCommit = "${gitCommit[0..10]}"
      def previousGitCommit = sh(script: "git rev-parse ${gitCommit}~", returnStdout: true)
-     def mybuildverison = getBuildVersion(env.BUILD_NUMBER)
+     def mybuildversion = getBuildVersion(env.BUILD_NUMBER)
      def projektname = "pipeline-example"
      def registry = "registry.youthclubstage.de:5000/pipeline-example"
      def dns = "pe.youthclubstage.de"
@@ -46,18 +46,15 @@ def label = "worker-${UUID.randomUUID().toString()}"
 
      stage('Create Docker images') {
        container('docker') {
-           dockerImage = docker.build registry + ":$mybuildverison"
+           dockerImage = docker.build registry + ":$mybuildversion"
            dockerImage.push()
        }
      }*/
      stage('Run kubectl') {
        container('kubectl') {
-            script {
-                env.PRNAME = projektname
-                env.PRVERSION = mybuildverison
-                env.FILENAME = readFile 'template/green.yml'
-            }
-           sh "echo \"${env.FILENAME}\""
+           sh "cat template/green.yml | sed -e 's/{NAME}/$projektname/g;s/{VERSION}/$mybuildversion/g' >> target/green.yml"
+           sh "cat target/green.yml"
+           sh "kubectl apply -f target/green.yml"
        }
      }/*
      stage('Run helm') {
