@@ -20,8 +20,7 @@ stages{
             script{
               sh "mvn -v"
               sh "java -version"
-              sh "mvn -B clean install -DskipTests=true"  
-               }
+              sh "mvn -B clean install -DskipTests=true"   
               }
            }
        }
