@@ -56,7 +56,7 @@ def port = "8080"
             }
            sh """
                echo ${env.FILENAME}
-             ""
+             """
        }
      }/*
      stage('Run helm') {
