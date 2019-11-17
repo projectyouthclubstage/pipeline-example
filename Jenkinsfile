@@ -22,8 +22,6 @@ def label = "worker-${UUID.randomUUID().toString()}"
      def projektname = "pipeline-example"
      def registry = "registry.youthclubstage.de:5000/pipeline-example"
      def healthpath = "/actuator/health"
-     def dns = "pe.youthclubstage.de"
-     def dnsblue = "peb.youthclubstage.de"
      def port = "8080"
 
      stage('Build') {
@@ -67,7 +65,7 @@ def label = "worker-${UUID.randomUUID().toString()}"
      }
      stage('Health Check'){
        retry (3) {
-         sleep 30000
+         sleep 30
          httpRequest url:"http://$projektname-green-srv$healthpath", validResponseCodes: '200'
        }
      }
