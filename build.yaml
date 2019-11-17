@@ -1,0 +1,36 @@
+apiVersion: v1
+kind: Pod
+metadata:
+  labels:
+    some-label: build
+spec:
+  containers:
+    - name: jnlp
+      image: 'registry.youthclubstage.de:5000/jnlp-slave:6'
+      args: '${computer.jnlpmac} ${computer.name}'
+      volumeMounts:
+        - mountPath: /var/run/docker.sock
+          name: docker
+    - name: maven
+      image: 'arm32v7/maven'
+      tty: true
+      command:
+        - cat
+    - name: docker
+      image: 'docker'
+      tty: true
+      command:
+        - cat
+      volumeMounts:
+      - mountPath: /var/run/docker.sock
+        name: docker
+    - name: kubectl
+      image: 'gitlabarm/kubectl'
+      tty: true
+      command:
+        - cat
+  volumes:
+    - name: docker
+      hostPath:
+        # directory location on host
+        path: /var/run/docker.sock

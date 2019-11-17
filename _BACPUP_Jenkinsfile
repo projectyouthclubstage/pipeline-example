@@ -1,11 +1,19 @@
-pipeline {
-  agent {
-    kubernetes {
-      yamlFile 'build.yaml'
-    }
-  }
-  stages {
-  def myRepo = checkout scm
+import java.text.SimpleDateFormat
+
+def label = "worker-${UUID.randomUUID().toString()}"
+
+
+ podTemplate(label: label, containers: [
+   containerTemplate(name: 'jnlp', image: 'registry.youthclubstage.de:5000/jnlp-slave:6', args: '${computer.jnlpmac} ${computer.name}'),
+   containerTemplate(name: 'maven', image: 'arm32v7/maven', command: 'cat', ttyEnabled: true),
+   containerTemplate(name: 'docker', image: 'docker', command: 'cat', ttyEnabled: true),
+   containerTemplate(name: 'kubectl', image: 'gitlabarm/kubectl', command: 'cat', ttyEnabled: true)
+ ],
+ volumes: [
+   hostPathVolume(mountPath: '/var/run/docker.sock', hostPath: '/var/run/docker.sock')
+ ]) {
+   node(label) {
+     def myRepo = checkout scm
      def mybuildversion = getBuildVersion(env.BUILD_NUMBER)
      def gitBranch = myRepo.GIT_BRANCH
      def projektname = env.JOB_NAME.replace("/$gitBranch","").replace("projectyouthclubstage/","")
@@ -88,7 +96,7 @@ pipeline {
        }
      }
    }
-}
+ }
 
  def getBuildVersion(String buildnr){
      def dateFormat = new SimpleDateFormat("yyyyMMddHHmm")
