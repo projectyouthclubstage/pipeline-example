@@ -24,6 +24,15 @@ stages{
               }
            }
        }
+  
+       stage('Unit Tests')
+       {
+           steps{
+            script{
+                sh "mvn -B test"
+              }
+           }
+       }
 
        stage('docker build')
        {
