@@ -36,12 +36,22 @@ stages{
 
        stage('docker build')
        {
+          when {
+                branch 'master'
+            }
            steps{
             script{
-                if (env.BRANCH_NAME == 'master') {
                dockerImage = docker.build registry + ":$mybuildverison"
                dockerImage.push()
-               }
+              }
+           }
+       }
+       stage('Deploy Dev')
+       {
+           when { changelog '.*#DeployDev.*' }
+           steps{
+            script{
+                sh "echo hallo"
               }
            }
        }
