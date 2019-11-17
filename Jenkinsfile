@@ -24,7 +24,7 @@ def label = "worker-${UUID.randomUUID().toString()}"
      def dns = "pe.youthclubstage.de"
      def dnsblue = "peb.youthclubstage.de"
      def port = "8080"
-/*
+
      stage('Build') {
        container('maven') {
          sh "mvn -B clean install -DskipTests=true"
@@ -49,7 +49,7 @@ def label = "worker-${UUID.randomUUID().toString()}"
            dockerImage = docker.build registry + ":$mybuildversion"
            dockerImage.push()
        }
-     }*/
+     }
      stage('Run kubectl') {
        container('kubectl') {
            sh "cat template/green.yml | sed -e 's/{NAME}/$projektname/g;s/{VERSION}/$mybuildversion/g' >> target/green.yml"
