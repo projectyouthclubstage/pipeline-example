@@ -32,67 +32,83 @@ pipeline {
         }
      }
      stage('Build') {
+      steps {
        container('maven') {
          sh "mvn -B clean install -DskipTests=true"
        }
+      }
      }
      stage('Test') {
+       steps {
          container('maven') {
            sh """
              mvn -B test
              """
          }
+        }
      }
 
      stage('Create Docker images') {
        when { changelog '.*#DeployDev.*' }
-       container('docker') {
-           dockerImage = docker.build registry + ":$mybuildversion"
-           dockerImage.push()
+       steps {
+        container('docker') {
+            dockerImage = docker.build registry + ":$mybuildversion"
+            dockerImage.push()
+        }
        }
      }
      stage('Deploy Deployment to DEV') {
        when { changelog '.*#DeployDev.*' }
-       container('kubectl') {
-           sh "cat template/deployment.yaml | sed -e 's/{NAME}/$projektname/g;s/{VERSION}/$mybuildversion/g;s/{PORT}/$port/g;s/{BRANCH}/${GIT_BRANCH_LOCAL}/g' >> target/deployment.yaml"
-           sh "cat target/deployment.yaml"
-           sh "kubectl -n dev apply -f target/deployment.yaml"
+       steps {
+        container('kubectl') {
+            sh "cat template/deployment.yaml | sed -e 's/{NAME}/$projektname/g;s/{VERSION}/$mybuildversion/g;s/{PORT}/$port/g;s/{BRANCH}/${GIT_BRANCH_LOCAL}/g' >> target/deployment.yaml"
+            sh "cat target/deployment.yaml"
+            sh "kubectl -n dev apply -f target/deployment.yaml"
+        }
        }
      }
      stage('Deploy Service-Green to DEV') {
        when { changelog '.*#DeployDev.*' }
-       container('kubectl') {
-           sh "cat template/service-green.yaml | sed -e 's/{NAME}/$projektname/g;s/{VERSION}/$mybuildversion/g;s/{PORT}/$port/g' >> target/service-green.yaml"
-           sh "cat target/service-green.yaml"
-           sh "kubectl -n dev apply -f target/service-green.yaml"
+       steps {
+        container('kubectl') {
+            sh "cat template/service-green.yaml | sed -e 's/{NAME}/$projektname/g;s/{VERSION}/$mybuildversion/g;s/{PORT}/$port/g' >> target/service-green.yaml"
+            sh "cat target/service-green.yaml"
+            sh "kubectl -n dev apply -f target/service-green.yaml"
+        }
        }
      }
      stage('Health Check Green'){
        when { changelog '.*#DeployDev.*' }
-       retry (3) {
-         sleep 30
-         httpRequest url:"http://$projektname-green-srv.dev$healthpath", validResponseCodes: '200'
-       }
+       steps {
+        retry (3) {
+          sleep 30
+          httpRequest url:"http://$projektname-green-srv.dev$healthpath", validResponseCodes: '200'
+        }
+      }
      }
      stage('Deploy Service to DEV') {
        when { changelog '.*#DeployDev.*' }
-       container('kubectl') {
-           sh "cat template/service.yaml | sed -e 's/{NAME}/$projektname/g;s/{VERSION}/$mybuildversion/g;s/{PORT}/$port/g' >> target/service.yaml"
-           sh "cat target/service.yaml"
-           sh "kubectl -n dev apply -f target/service.yaml"
-           try{
-            sh "kubectl -n dev delete all -l service=$projektname"
-           }catch(Exception ex){
+       steps {
+        container('kubectl') {
+            sh "cat template/service.yaml | sed -e 's/{NAME}/$projektname/g;s/{VERSION}/$mybuildversion/g;s/{PORT}/$port/g' >> target/service.yaml"
+            sh "cat target/service.yaml"
+            sh "kubectl -n dev apply -f target/service.yaml"
+            try{
+             sh "kubectl -n dev delete all -l service=$projektname"
+            }catch(Exception ex){
 
-           }
-           sh "kubectl -n dev label all -l run=$projektname-$mybuildversion service=$projektname"
+            }
+            sh "kubectl -n dev label all -l run=$projektname-$mybuildversion service=$projektname"
+        }
        }
      }
      stage('Health Check'){
-       retry (3) {
-         sleep 30
-         httpRequest url:"http://$projektname-srv.dev$healthpath", validResponseCodes: '200'
-       }
+       steps {
+        retry (3) {
+          sleep 30
+          httpRequest url:"http://$projektname-srv.dev$healthpath", validResponseCodes: '200'
+        }
+      }
      }
    }
 }
