@@ -22,7 +22,7 @@ pipeline {
           script{
             def myRepo = checkout scm
             gitBranch = myRepo.GIT_BRANCH
-            projektname = env.JOB_NAME.replace("/$gitBranch","").replace("projectyouthclubstage/","")
+            projektname = env.JOB_NAME.replace("/$gitBranch","").replace("YouthClubstage/","")
             registry = "registry.youthclubstage.de:5000/${projektname}"
          }
          echo "$projektname"
