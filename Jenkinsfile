@@ -13,10 +13,22 @@ pipeline{
 
 stages{
 
+       stage('Build
+       {
+           steps{
+            checkout scm
+            script{
+              sh "mvn -v"
+              sh "java -version"
+              sh "mvn -B clean install -DskipTests=true"  
+               }
+              }
+           }
+       }
+
        stage('docker build')
        {
            steps{
-             checkout scm
             script{
                 if (env.BRANCH_NAME == 'master') {
                dockerImage = docker.build registry + ":$mybuildverison"
