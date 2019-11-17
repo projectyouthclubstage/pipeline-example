@@ -84,7 +84,7 @@ def port = "8080"
                                   spec:
                                     containers:
                                     - name: $(projektname)-$(mybuildverison)
-                                      image: registry.youthclubstage.de:5000/p$(projektname):$(mybuildverison)
+                                      image: registry.youthclubstage.de:5000/$(projektname):$(mybuildverison)
                                       ports:
                                       - containerPort: 8080
                               \\" > green.yaml
