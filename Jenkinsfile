@@ -9,8 +9,8 @@ def dnsblue = "peb.youthclubstage.de"
 def port = "8080"
 
  podTemplate(label: label, containers: [
-   containerTemplate(name: 'maven', image: 'arm32v7/maven', command: 'cat', ttyEnabled: true),
-   containerTemplate(name: 'docker', image: 'docker', command: 'cat', ttyEnabled: true),
+   containerTemplate(name: 'maven', image: 'arm32v7/maven', command: 'cat', ttyEnabled: true)
+   //containerTemplate(name: 'docker', image: 'docker', command: 'cat', ttyEnabled: true),
  ],
  volumes: [
    hostPathVolume(mountPath: '/var/run/docker.sock', hostPath: '/var/run/docker.sock')
@@ -41,7 +41,7 @@ def port = "8080"
        }
      }
 
-     stage('Create Docker images') {
+  /*   stage('Create Docker images') {
        container('docker') {
            dockerImage = docker.build registry + ":$mybuildverison"
            dockerImage.push()
@@ -56,7 +56,7 @@ def port = "8080"
        container('helm') {
          sh "helm list"
        }
-     }
+     }*/
    }
  }
 
