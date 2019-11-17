@@ -50,11 +50,11 @@ def label = "worker-${UUID.randomUUID().toString()}"
            dockerImage.push()
        }
      }
-     stage('Run kubectl') {
+     stage('Deploy Deployment to DEV') {
        container('kubectl') {
-           sh "cat template/green.yaml | sed -e 's/{NAME}/$projektname/g;s/{VERSION}/$mybuildversion/g' >> target/green.yaml"
-           sh "cat target/green.yaml"
-           sh "kubectl -n test apply -f target/green.yaml"
+           sh "cat template/deployment.yaml | sed -e 's/{NAME}/$projektname/g;s/{VERSION}/$mybuildversion/g' >> target/deployment.yaml"
+           sh "cat target/deployment.yaml"
+           sh "kubectl -n dev apply -f target/deployment.yaml"
        }
      }/*
      stage('Run helm') {
