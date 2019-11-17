@@ -9,6 +9,7 @@ def dnsblue = "peb.youthclubstage.de"
 def port = "8080"
 
  podTemplate(label: label, containers: [
+   containerTemplate(name: 'jnlp', image: 'registry.youthclubstage.de:5000/jnlp-slave:6', args: '${computer.jnlpmac} ${computer.name}'),
    //containerTemplate(name: 'maven', image: 'arm32v7/maven', command: 'cat', ttyEnabled: true)
    containerTemplate(name: 'docker', image: 'docker', command: 'cat', ttyEnabled: true)
  ],
