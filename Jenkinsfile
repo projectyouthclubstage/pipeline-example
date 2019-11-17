@@ -69,6 +69,12 @@ def label = "worker-${UUID.randomUUID().toString()}"
            sh "cat template/service.yaml | sed -e 's/{NAME}/$projektname/g;s/{VERSION}/$mybuildversion/g' >> target/service.yaml"
            sh "cat target/service.yaml"
            sh "kubectl -n dev apply -f target/service.yaml"
+           try{
+            sh "kubectl -n dev delete all -l service=$projektname"
+           }catch(Exception ex){
+
+           }
+           sh "kubectl -n dev label all -l run=$projektname-$mybuildversion service=$projektname"
        }
      }
      /*
