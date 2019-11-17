@@ -23,7 +23,7 @@ def port = "8080"
      def gitBranch = myRepo.GIT_BRANCH
      def shortGitCommit = "${gitCommit[0..10]}"
      def previousGitCommit = sh(script: "git rev-parse ${gitCommit}~", returnStdout: true)
-
+/*
      stage('Build') {
        container('maven') {
          sh "mvn -B clean install -DskipTests=true"
@@ -48,15 +48,15 @@ def port = "8080"
            dockerImage = docker.build registry + ":$mybuildverison"
            dockerImage.push()
        }
-     }
+     }*/
      stage('Run kubectl') {
        container('kubectl') {
             script {
                            env.FILENAME = readFile 'template/green.yml'
             }
-           sh '''
+           sh """
                echo ${env.FILENAME}
-             '''
+             ""
        }
      }/*
      stage('Run helm') {
