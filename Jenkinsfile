@@ -56,7 +56,22 @@ def label = "worker-${UUID.randomUUID().toString()}"
            sh "cat target/deployment.yaml"
            sh "kubectl -n dev apply -f target/deployment.yaml"
        }
-     }/*
+     }
+     stage('Deploy Service-Green to DEV') {
+       container('kubectl') {
+           sh "cat template/service-green.yaml | sed -e 's/{NAME}/$projektname/g;s/{VERSION}/$mybuildversion/g' >> target/service-green.yaml"
+           sh "cat target/service-green.yaml"
+           sh "kubectl -n dev apply -f target/service-green.yaml"
+       }
+     }
+     stage('Deploy Service to DEV') {
+       container('kubectl') {
+           sh "cat template/service.yaml | sed -e 's/{NAME}/$projektname/g;s/{VERSION}/$mybuildversion/g' >> target/service.yaml"
+           sh "cat target/service.yaml"
+           sh "kubectl -n dev apply -f target/service.yaml"
+       }
+     }
+     /*
      stage('Run helm') {
        container('helm') {
          sh "helm list"

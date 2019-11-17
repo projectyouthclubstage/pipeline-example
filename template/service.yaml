@@ -1,0 +1,12 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: {NAME}-srv
+spec:
+  selector:
+    run: {NAME}-{VERSION}
+  ports:
+      - name: http
+        protocol: TCP
+        port: 80
+        targetPort: 8080
