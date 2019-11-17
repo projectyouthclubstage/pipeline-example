@@ -51,44 +51,11 @@ def port = "8080"
      }
      stage('Run kubectl') {
        container('kubectl') {
+            script {
+                           env.FILENAME = readFile 'template/green.yml'
+            }
            sh '''
-               echo       "apiVersion: v1
-                              kind: Service
-                              metadata:
-                                name: $(projektname)-srv-green
-                                labels:
-                                  run: $(projektname)-$(mybuildverison)
-                              spec:
-                                type: NodePort
-                                ports:
-                                - port: 80
-                                  targetPort: 8080
-                                  protocol: TCP
-                                  name: http
-                                selector:
-                                  run: $(projektname)-$(mybuildverison)
-                              ---
-                              apiVersion: apps/v1
-                              kind: Deployment
-                              metadata:
-                                name: $(projektname)-$(mybuildverison)
-                              spec:
-                                selector:
-                                  matchLabels:
-                                    run: $(projektname)-$(mybuildverison)
-                                replicas: 3
-                                template:
-                                  metadata:
-                                    labels:
-                                      run: $(projektname)-$(mybuildverison)
-                                  spec:
-                                    containers:
-                                    - name: $(projektname)-$(mybuildverison)
-                                      image: registry.youthclubstage.de:5000/$(projektname):$(mybuildverison)
-                                      ports:
-                                      - containerPort: 8080
-                              \\" > green.yaml
-                kubectl apply -f green.yml
+               echo ${env.FILENAME}
              '''
        }
      }/*
