@@ -1,3 +1,5 @@
+import java.text.SimpleDateFormat
+
 def label = "worker-${UUID.randomUUID().toString()}"
 def mybuildverison = getBuildVersion(env.BUILD_NUMBER)
 def projektname = "pipeline-example"
@@ -11,7 +13,6 @@ def port = "8080"
    containerTemplate(name: 'docker', image: 'docker', command: 'cat', ttyEnabled: true),
  ],
  volumes: [
-   hostPathVolume(mountPath: '/home/gradle/.gradle', hostPath: '/tmp/jenkins/.gradle'),
    hostPathVolume(mountPath: '/var/run/docker.sock', hostPath: '/var/run/docker.sock')
  ]) {
    node(label) {
