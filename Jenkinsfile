@@ -11,7 +11,8 @@ def port = "8080"
  podTemplate(label: label, containers: [
    containerTemplate(name: 'jnlp', image: 'registry.youthclubstage.de:5000/jnlp-slave:6', args: '${computer.jnlpmac} ${computer.name}'),
    containerTemplate(name: 'maven', image: 'arm32v7/maven', command: 'cat', ttyEnabled: true),
-   containerTemplate(name: 'docker', image: 'docker', command: 'cat', ttyEnabled: true)
+   containerTemplate(name: 'docker', image: 'docker', command: 'cat', ttyEnabled: true),
+   containerTemplate(name: 'kubectl', image: 'gitlabarm/kubectl', command: 'cat', ttyEnabled: true)
  ],
  volumes: [
    hostPathVolume(mountPath: '/var/run/docker.sock', hostPath: '/var/run/docker.sock')
@@ -47,12 +48,12 @@ def port = "8080"
            dockerImage = docker.build registry + ":$mybuildverison"
            dockerImage.push()
        }
-     }/*
+     }
      stage('Run kubectl') {
        container('kubectl') {
          sh "kubectl get pods"
        }
-     }
+     }/*
      stage('Run helm') {
        container('helm') {
          sh "helm list"
