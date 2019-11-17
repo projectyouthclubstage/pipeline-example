@@ -37,17 +37,11 @@ pipeline {
        }
      }
      stage('Test') {
-       try {
          container('maven') {
            sh """
              mvn -B test
              """
          }
-       }
-       catch (exc) {
-         println "Failed to test - ${currentBuild.fullDisplayName}"
-         throw(exc)
-       }
      }
 
      stage('Create Docker images') {
