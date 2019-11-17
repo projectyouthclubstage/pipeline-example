@@ -10,7 +10,7 @@ def port = "8080"
 
  podTemplate(label: label, containers: [
    containerTemplate(name: 'jnlp', image: 'registry.youthclubstage.de:5000/jnlp-slave:6', args: '${computer.jnlpmac} ${computer.name}'),
-   //containerTemplate(name: 'maven', image: 'arm32v7/maven', command: 'cat', ttyEnabled: true)
+   containerTemplate(name: 'maven', image: 'arm32v7/maven', command: 'cat', ttyEnabled: true),
    containerTemplate(name: 'docker', image: 'docker', command: 'cat', ttyEnabled: true)
  ],
  volumes: [
@@ -23,7 +23,7 @@ def port = "8080"
      def shortGitCommit = "${gitCommit[0..10]}"
      def previousGitCommit = sh(script: "git rev-parse ${gitCommit}~", returnStdout: true)
 
-     /*stage('Build') {
+     stage('Build') {
        container('maven') {
          sh "mvn -B clean install -DskipTests=true"
        }
@@ -40,7 +40,7 @@ def port = "8080"
          println "Failed to test - ${currentBuild.fullDisplayName}"
          throw(exc)
        }
-     }*/
+     }
 
      stage('Create Docker images') {
        container('docker') {
