@@ -1,12 +1,7 @@
 import java.text.SimpleDateFormat
 
 def label = "worker-${UUID.randomUUID().toString()}"
-def mybuildverison = getBuildVersion(env.BUILD_NUMBER)
-def projektname = "pipeline-example"
-def registry = "registry.youthclubstage.de:5000/pipeline-example"
-def dns = "pe.youthclubstage.de"
-def dnsblue = "peb.youthclubstage.de"
-def port = "8080"
+
 
  podTemplate(label: label, containers: [
    containerTemplate(name: 'jnlp', image: 'registry.youthclubstage.de:5000/jnlp-slave:6', args: '${computer.jnlpmac} ${computer.name}'),
@@ -23,6 +18,12 @@ def port = "8080"
      def gitBranch = myRepo.GIT_BRANCH
      def shortGitCommit = "${gitCommit[0..10]}"
      def previousGitCommit = sh(script: "git rev-parse ${gitCommit}~", returnStdout: true)
+     def mybuildverison = getBuildVersion(env.BUILD_NUMBER)
+     def projektname = "pipeline-example"
+     def registry = "registry.youthclubstage.de:5000/pipeline-example"
+     def dns = "pe.youthclubstage.de"
+     def dnsblue = "peb.youthclubstage.de"
+     def port = "8080"
 /*
      stage('Build') {
        container('maven') {
