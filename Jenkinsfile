@@ -14,13 +14,9 @@ def label = "worker-${UUID.randomUUID().toString()}"
  ]) {
    node(label) {
      def myRepo = checkout scm
-     def gitCommit = myRepo.GIT_COMMIT
-     def gitBranch = myRepo.GIT_BRANCH
-     def shortGitCommit = "${gitCommit[0..10]}"
-     def previousGitCommit = sh(script: "git rev-parse ${gitCommit}~", returnStdout: true)
      def mybuildversion = getBuildVersion(env.BUILD_NUMBER)
-     def projektname = "pipeline-example"
-     def registry = "registry.youthclubstage.de:5000/pipeline-example"
+     def projektname = env.JOB_NAME.replace("/master","").replace("projectyouthclubstage/","")
+     def registry = "registry.youthclubstage.de:5000/${projektname}"
      def healthpath = "/actuator/health"
      def port = "8080"
 
@@ -51,19 +47,19 @@ def label = "worker-${UUID.randomUUID().toString()}"
      }
      stage('Deploy Deployment to DEV') {
        container('kubectl') {
-           sh "cat template/deployment.yaml | sed -e 's/{NAME}/$projektname/g;s/{VERSION}/$mybuildversion/g' >> target/deployment.yaml"
+           sh "cat template/deployment.yaml | sed -e 's/{NAME}/$projektname/g;s/{VERSION}/$mybuildversion/g;s/{PORT}/$port/g' >> target/deployment.yaml"
            sh "cat target/deployment.yaml"
            sh "kubectl -n dev apply -f target/deployment.yaml"
        }
      }
      stage('Deploy Service-Green to DEV') {
        container('kubectl') {
-           sh "cat template/service-green.yaml | sed -e 's/{NAME}/$projektname/g;s/{VERSION}/$mybuildversion/g' >> target/service-green.yaml"
+           sh "cat template/service-green.yaml | sed -e 's/{NAME}/$projektname/g;s/{VERSION}/$mybuildversion/g;s/{PORT}/$port/g' >> target/service-green.yaml"
            sh "cat target/service-green.yaml"
            sh "kubectl -n dev apply -f target/service-green.yaml"
        }
      }
-     stage('Health Check'){
+     stage('Health Check Green'){
        retry (3) {
          sleep 30
          httpRequest url:"http://$projektname-green-srv.dev$healthpath", validResponseCodes: '200'
@@ -71,7 +67,7 @@ def label = "worker-${UUID.randomUUID().toString()}"
      }
      stage('Deploy Service to DEV') {
        container('kubectl') {
-           sh "cat template/service.yaml | sed -e 's/{NAME}/$projektname/g;s/{VERSION}/$mybuildversion/g' >> target/service.yaml"
+           sh "cat template/service.yaml | sed -e 's/{NAME}/$projektname/g;s/{VERSION}/$mybuildversion/g;s/{PORT}/$port/g' >> target/service.yaml"
            sh "cat target/service.yaml"
            sh "kubectl -n dev apply -f target/service.yaml"
            try{
@@ -82,12 +78,12 @@ def label = "worker-${UUID.randomUUID().toString()}"
            sh "kubectl -n dev label all -l run=$projektname-$mybuildversion service=$projektname"
        }
      }
-     /*
-     stage('Run helm') {
-       container('helm') {
-         sh "helm list"
+     stage('Health Check'){
+       retry (3) {
+         sleep 30
+         httpRequest url:"http://$projektname-srv.dev$healthpath", validResponseCodes: '200'
        }
-     }*/
+     }
    }
  }
 

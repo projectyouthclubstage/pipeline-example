@@ -18,4 +18,4 @@ spec:
         - name: {NAME}-{VERSION}
           image: registry.youthclubstage.de:5000/{NAME}:{VERSION}
           ports:
-             - containerPort: 8080
+             - containerPort: {PORT}
