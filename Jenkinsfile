@@ -15,7 +15,8 @@ def label = "worker-${UUID.randomUUID().toString()}"
    node(label) {
      def myRepo = checkout scm
      def mybuildversion = getBuildVersion(env.BUILD_NUMBER)
-     def projektname = env.JOB_NAME.replace("/${GIT_BRANCH_LOCAL}","").replace("projectyouthclubstage/","")
+     def gitBranch = myRepo.GIT_BRANCH
+     def projektname = env.JOB_NAME.replace("/$gitBranch","").replace("projectyouthclubstage/","")
      def registry = "registry.youthclubstage.de:5000/${projektname}"
      def healthpath = "/actuator/health"
      def port = "8080"
@@ -23,7 +24,7 @@ def label = "worker-${UUID.randomUUID().toString()}"
          echo "$projektname"
          echo "$mybuildversion"
          echo "$registry"
-         echo "${GIT_BRANCH_LOCAL}"
+         echo "$gitBranch"
      }
      stage('Build') {
        container('maven') {
