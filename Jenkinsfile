@@ -21,6 +21,7 @@ def label = "worker-${UUID.randomUUID().toString()}"
      def mybuildversion = getBuildVersion(env.BUILD_NUMBER)
      def projektname = "pipeline-example"
      def registry = "registry.youthclubstage.de:5000/pipeline-example"
+     def healthpath = "/actuator/health"
      def dns = "pe.youthclubstage.de"
      def dnsblue = "peb.youthclubstage.de"
      def port = "8080"
@@ -62,6 +63,12 @@ def label = "worker-${UUID.randomUUID().toString()}"
            sh "cat template/service-green.yaml | sed -e 's/{NAME}/$projektname/g;s/{VERSION}/$mybuildversion/g' >> target/service-green.yaml"
            sh "cat target/service-green.yaml"
            sh "kubectl -n dev apply -f target/service-green.yaml"
+       }
+     }
+     stage('Health Check'){
+       retry (3) {
+         sleep 30000
+         httpRequest url:"http://$(projektname)-green-srv$(healthpath)", validResponseCodes: '200'
        }
      }
      stage('Deploy Service to DEV') {
