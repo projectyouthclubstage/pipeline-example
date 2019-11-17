@@ -9,8 +9,8 @@ def dnsblue = "peb.youthclubstage.de"
 def port = "8080"
 
  podTemplate(label: label, containers: [
-   containerTemplate(name: 'maven', image: 'arm32v7/maven', command: 'cat', ttyEnabled: true)
-   //containerTemplate(name: 'docker', image: 'docker', command: 'cat', ttyEnabled: true),
+   //containerTemplate(name: 'maven', image: 'arm32v7/maven', command: 'cat', ttyEnabled: true)
+   containerTemplate(name: 'docker', image: 'docker', command: 'cat', ttyEnabled: true)
  ],
  volumes: [
    hostPathVolume(mountPath: '/var/run/docker.sock', hostPath: '/var/run/docker.sock')
@@ -22,7 +22,7 @@ def port = "8080"
      def shortGitCommit = "${gitCommit[0..10]}"
      def previousGitCommit = sh(script: "git rev-parse ${gitCommit}~", returnStdout: true)
 
-     stage('Build') {
+     /*stage('Build') {
        container('maven') {
          sh "mvn -B clean install -DskipTests=true"
        }
@@ -39,14 +39,14 @@ def port = "8080"
          println "Failed to test - ${currentBuild.fullDisplayName}"
          throw(exc)
        }
-     }
+     }*/
 
-  /*   stage('Create Docker images') {
+     stage('Create Docker images') {
        container('docker') {
            dockerImage = docker.build registry + ":$mybuildverison"
            dockerImage.push()
        }
-     }
+     }/*
      stage('Run kubectl') {
        container('kubectl') {
          sh "kubectl get pods"
